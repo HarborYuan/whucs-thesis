@@ -394,7 +394,7 @@
 \RequirePackage [ labelsep = quad ] { caption } % 序号之后空一格写标题
 % 设置表格标题字体为黑体, 设置图标题字体为宋体
 \DeclareCaptionFont { whutablecap  }
-  { \heiti \addCJKfontfeatures { BoldFont = * } \bfseries \zihao { -4 } }
+{ \songti \zihao { -4 } }
 \DeclareCaptionFont { whufigurecap }
   { \songti \zihao { -4 } }
 \captionsetup [ table ]
@@ -501,7 +501,7 @@
     % 数学字体
 
     cjk-font .choices:nn =
-      { windows , mac , fandol , overleaf , none }
+      { windows , mac , fandol , overleaf , source , none }
       { \__whu_cjk_fontset:n { \l_keys_choice_tl } },
     % 中文字体
   }
@@ -630,6 +630,31 @@
         AutoFakeSlant = 0.167
       }
     \__whu_set_cjk_font_kai:nn { FandolKai-Regular.otf }
+      {
+        AutoFakeBold  = 4,
+        AutoFakeSlant = 0.167
+      }
+  }
+
+% 思源字体
+\cs_new_protected:Npn \__whu_set_cjk_font_source:
+  {
+    \__whu_set_cjk_font_song:nn { Noto~Serif~CJK~SC }
+      {
+        AutoFakeSlant      = 0.167,
+        BoldItalicFeatures = { FakeSlant = 0.167 }
+      }
+    \__whu_set_cjk_font_hei:nn { Noto~Sans~CJK~SC }
+      {
+        AutoFakeSlant      = 0.167,
+        BoldItalicFeatures = { FakeSlant = 0.167 }
+      }
+    \__whu_set_cjk_font_fang:nn { FandolFang }
+      {
+        AutoFakeBold  = 4,
+        AutoFakeSlant = 0.167
+      }
+    \__whu_set_cjk_font_kai:nn { AR~PL~UKai~CN }
       {
         AutoFakeBold  = 4,
         AutoFakeSlant = 0.167
