@@ -193,6 +193,7 @@
 
 \RequirePackage{lscape}
 \RequirePackage [table] {xcolor}
+\RequirePackage{datetime}
 
 \RequirePackage { tikz, pgfplots } % 绘图
 \pgfplotsset { compat = 1.17 }
@@ -349,7 +350,7 @@
 \tl_set:Nn \cftdotsep { \c_one_int }
 % 点间距
 
-\clist_map_inline:nn { sec , subsec , subsubsec }
+\clist_map_inline:nn { sec  }
   {
     \tl_set:cn { cft #1 font } { \zihao { -4 } }
 
@@ -357,6 +358,16 @@
       { \tl_set:cn  { cft #1 page font } { \zihao { 5 } } }
 
     \dim_set:cn { cft #1 indent } { \parindent }
+  }
+
+\clist_map_inline:nn { subsec, subsubsec }
+  {
+    \tl_set:cn { cft #1 font } { \zihao { -4 } }
+
+    \tl_if_eq:NnF \g__whu_option_type_tl { doctor }
+      { \tl_set:cn  { cft #1 page font } { \zihao { 5 } } }
+
+    \dim_set:cn { cft #1 indent } { 1.5\parindent }
   }
 
 \dim_zero:N \cftfigindent
@@ -757,6 +768,12 @@
   { \zhdigits {#1} 年 \zhnumber {#2} 月 }
 \cs_generate_variant:Nn \__whu_date_parse:n { V }
 
+\cs_new_protected:Npn \__whu_date_parse_en:n #1
+  { \__whu_date_parse_en_aux:w #1 \q_stop }
+\cs_new_protected:Npn \__whu_date_parse_en_aux:w #1 / #2 \q_stop
+  { \monthname[#2],~#1 }
+\cs_generate_variant:Nn \__whu_date_parse_en:n { V }
+
 \tl_if_eq:NnTF \g__whu_option_type_tl { bachelor }
   { \skip_const:Nn \c__whu_baseline_skip { 23 pt } }
   {
@@ -790,6 +807,7 @@
 \tl_new:N \g__whu_info_direction_tl
 \tl_new:N \g__whu_info_date_tl
 \clist_new:N \g__whu_info_advisor_clist
+\tl_new:N \g__whu_info_advisor_en_tl
 \clist_new:N \g__whu_info_keywords_clist
 \clist_new:N \g__whu_info_keywords_en_clist
 
@@ -810,6 +828,7 @@
     direction      .tl_gset:N    = \g__whu_info_direction_tl,
     date           .tl_gset:N    = \g__whu_info_date_tl,
     advisor        .clist_gset:N = \g__whu_info_advisor_clist,
+    advisor *      .clist_gset:N = \g__whu_info_advisor_en_tl,
     keywords       .clist_gset:N = \g__whu_info_keywords_clist,
     keywords *     .clist_gset:N = \g__whu_info_keywords_en_clist,
 
@@ -1057,6 +1076,7 @@
     \__whu_make_cover_master_doctor:
     \__whu_make_title_en:
     \__whu_make_statesment_master_doctor:
+    \__whu_make_authorization:
 
     \pagestyle { plain }
     \pagenumbering { Roman }
@@ -1244,13 +1264,44 @@
 \cs_new_protected:Npn \__whu_make_title_en:
   {
     \__whu_new_chapter_page:
+    \vspace*{0.5cm}
     \begin { center }
       \zihao { 2 } \g__whu_info_title_en_tl
     \end { center }
     \vfill
-    \begin { center }
-      \zihao { 4 } \g__whu_info_author_en_tl
-    \end { center }
+    \begin{center}
+    \zihao{4}
+     \emph{By}
+    \end{center}
+
+    \begin{center}
+    \zihao{4}
+     {\g__whu_info_author_en_tl}
+    \end{center}
+    
+    \vfill
+    
+    \begin{center}
+     \zihao{4}
+     \emph{Supervised~By} 
+    \end{center}
+ 
+    \begin{center}
+     \zihao{4}
+     {\g__whu_info_advisor_en_tl}
+    \end{center}
+    
+    \vfill
+
+    \begin{center}
+    \zihao{4}
+    {Wuhan~University}
+    \end{center}
+    
+    \begin{center}
+    \zihao{4}
+    {\__whu_date_parse_en:V { \g__whu_info_date_tl }}
+    \end{center}
     \__whu_new_chapter_page:
   }
 
@@ -1310,9 +1361,11 @@
     \__whu_new_chapter_page:
     \mode_leave_vertical: \skip_vertical:N \baselineskip
     \noindent \hfil
-    { \zihao { 4 } \heiti \textbf { 武汉大学学位论文使用授权协议书 } }
-    \par \skip_vertical:n { 25 pt }
-    \skip_set:Nn \baselineskip { 22 pt }
+    { \zihao { -2 } \heiti { 武汉大学学位论文使用授权协议书 } }
+    \par \skip_vertical:n { 2 \baselineskip }
+    {
+    \zihao { 4 }\skip_set:Nn \baselineskip { 30 pt }
+    
     本学位论文作者愿意遵守武汉大学关于保存、使用学位论文的管理办法及规定，即：学
     校有权保存学位论文的印刷本和电子版，并提供文献检索与阅览服务；学校可以采用影
     印、缩印、数字化或其它复制手段保存论文；在以教学与科研服务为目的前提下，学校
@@ -1323,15 +1376,20 @@
     \hbox:n { \textsquare } 两年/ \hbox:n { \textsquare }三年以后，同意在校园网
     内允许读者在线浏览并下载全文，学校可以为存在馆际合作关系的兄弟高校用户提供文
     献传递服务和交换服务。（保密论文解密后遵守此规定）
-    \par \skip_vertical:n { 10 pt }
+    \par \skip_vertical:n { 40 pt }
     \begin { minipage } { 20 em }
       \skip_set:Nn \baselineskip { 22 pt }
-      论文作者（签名）： \uline { \hfill } \par
-      学 \qquad 号： \uline { \hfill } \par
+      论文作者（签名）： \uline { \hfill } \par \skip_vertical:n { 22pt }
+      学 \qquad 号： \uline { \hfill } \par \skip_vertical:n { 22pt }
       学 \qquad 院： \uline { \hfill }
-      \par \skip_vertical:n { 15.6 pt }
+    \end { minipage }
+    \par \skip_vertical:n { 80pt }
+    
+    \hfill\begin { minipage }{0.5\linewidth}
+      \raggedright
       \hfill 日期： \qquad \qquad 年 \qquad 月 \qquad 日
     \end { minipage }
+    }
     \__whu_new_chapter_page:
   }
 
@@ -1418,7 +1476,7 @@
         \skip_vertical:N \c__whu_baseline_skip \par
         \__whu_put_keywords:nn
           { \bfseries \zihao { -4 } Key ~ words: ~ }
-          { \clist_use:Nn \g__whu_info_keywords_en_clist { ; ~ } }
+          { \clist_use:Nn \g__whu_info_keywords_en_clist { , ~ } }
       }
     \__whu_new_chapter_page:
   }
