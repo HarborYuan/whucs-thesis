@@ -1,0 +1,59 @@
+%% An Introduction to LaTeX Thesis Template of Wuhan University
+%%
+%% Created by WHUTUG
+
+%% Revised by HarborYuan based on the template of WHUTUG
+
+\documentclass[type=master,class=academic,twoside]{whucs-thesis}
+\whusetup
+  {
+    info               =
+      {
+        title          = {基于计算机的学位论文模版研究},
+        title*         = {On the Template of Thesis Based on Computer},
+        student-number = {10086},
+        school         = {计算机学院},
+        author         = {张三},
+        author*        = {San Zhang},
+        subject        = {Anonymous},
+        major          = {计算机科学与技术},
+        advisor        = {李四 , 教授},
+        direction      = {元宇宙},
+        date           = {2023/5},
+        keywords       = {关键词1, 关键词2},
+        keywords*      = {Keyword1, Keyword2},
+        clc            = {TODO},
+        udc            = {TODO},
+      },
+    style              =
+      {
+        graphics-path  = {{figures/}{data/}},
+        bib-style      = {numerical},
+        cite-style     = {numerical-super},
+        list-of-figures,
+        list-of-tables,
+      },
+    element            =
+      {
+        innovation     = {pages/innovation},
+        abstract       = {pages/abstract},
+        abstract*      = {pages/enabstract},
+        bibliography   = {ref/refs},
+        achievements   = {pages/achievements},
+        thanks         = {pages/thanks},
+        appendix       = {pages/appendix}
+      }
+  }
+
+\usepackage[figuresright]{rotating}
+\usepackage{lscape}
+
+\begin{document}
+%%----------- 主体部分 ----------- %%
+\include{pages/chapter1}
+\include{pages/chapter2}
+\include{pages/chapter3}
+\include{pages/chapter4}
+\include{pages/chapter5}
+
+\end{document}
